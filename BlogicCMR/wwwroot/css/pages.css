@@ -1,0 +1,334 @@
+:root {
+    --primary-orange: #ff5924;
+    --primary-purple: #513189;
+    --bg-light: #fafafa;
+    --text-dark: #333;
+}
+
+/* ============================
+   Common Container
+   ============================ */
+.container.py-4 {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* ============================
+   Page Title (Index/Create/Edit/Details)
+   ============================ */
+.page-title,
+.container.py-4 > h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin-bottom: 1.5rem;
+}
+
+/* ============================
+   Forms (Create & Edit)
+   ============================ */
+.form-label {
+    font-weight: 600;
+    color: var(--primary-purple);
+}
+
+.form-control {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255, 89, 36, 0.2);
+    outline: none;
+}
+
+.text-danger {
+    color: var(--primary-orange) !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+
+
+/* Form Buttons */
+.btn-outline-secondary {
+    border: 1px solid var(--primary-purple);
+    color: var(--primary-purple);
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--primary-purple);
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: var(--primary-orange);
+    border: 1px solid var(--primary-orange);
+    color: #fff;
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #e6501e;
+    border-color: #e6501e;
+}
+
+.btn-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+
+/* ============================
+   Speciální tlačítka: Detail, Edit, Delete
+   ============================ */
+
+/* 1) Tlačítko Detail (textové, purpurová barva) */
+.btn-details {
+    background-color: transparent;
+    color: var(--primary-purple);
+    font-weight: 600;
+    border: 1px solid var(--primary-purple);
+    padding: 0.375rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.btn-details i.bi {
+    font-size: 1rem;
+    /* ikona je bílá dědictvím z .btn-details */
+}
+.btn-details:hover {
+    background-color: #3f2363; /* trochu tmavší fialová */
+    border-color: #3f2363;
+    color: #fff;
+}
+
+/* 2) Tlačítko Edit (orange outline + ikona tužky) */
+.btn-edit {
+    background-color: transparent;
+    color: var(--primary-orange);
+    border: 1px solid var(--primary-orange);
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.btn-edit i.bi {
+    font-size: 1rem;
+    /* zachováme stejnou barvu jako text */
+}
+.btn-edit:hover {
+    background-color: var(--primary-orange);
+    color: #fff;
+    border-color: var(--primary-orange);
+}
+
+/* 3) Tlačítko Delete (červené, s ikonou popelnice) */
+.btn-delete {
+    background-color: transparent;
+    color: #dc3545; /* klasická sytá červená */
+    border: 1px solid #dc3545;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.btn-delete i.bi {
+    font-size: 1rem;
+}
+.btn-delete:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+
+
+/* ============================
+   Detail Card
+   ============================ */
+.detail-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.detail-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.detail-card .card-header {
+    background-color: var(--primary-purple);
+    color: #fff;
+    padding: 1rem 1.5rem;
+}
+
+.detail-card .card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.detail-card .card-body {
+    padding: 1.5rem;
+    color: var(--text-dark);
+}
+
+.detail-card dl.row dt {
+    font-weight: 600;
+    color: var(--primary-purple);
+    width: 30%;
+}
+
+.detail-card dl.row dd {
+    margin-left: 0;
+    width: 70%;
+    margin-bottom: 1rem;
+}
+
+.detail-actions {
+    margin-top: 1.5rem;
+}
+
+.detail-actions .btn {
+    margin-left: 0.5rem;
+}
+
+/* ============================
+   Tables (Index)
+   ============================ */
+.modern-table {
+    max-width: none;
+    overflow-x: auto;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+
+.modern-table table {
+    width: 100%;
+    table-layout: auto;
+    margin-bottom: 0;
+    border-collapse: separate;
+    white-space: nowrap;
+}
+
+.modern-table thead {
+    background-color: var(--primary-purple);
+    color: #fff;
+}
+
+.modern-table thead th {
+    border: none;
+    font-weight: 600;
+    padding: 0.75rem;
+}
+
+.modern-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.modern-table tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.modern-table tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.modern-table tbody tr:hover {
+    background-color: #ffece0;
+}
+
+.modern-table td,
+.modern-table th {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Action buttons in table */
+.modern-table .btn-outline-secondary,
+.modern-table .btn-outline-primary {
+    background-color: #fff;
+    border-width: 2px;
+}
+
+.modern-table .btn-outline-secondary {
+    border-color: var(--primary-purple);
+    color: var(--primary-purple);
+}
+
+.modern-table .btn-outline-secondary:hover {
+    background-color: var(--primary-purple);
+    color: #fff;
+}
+
+.modern-table .btn-outline-primary {
+    border-color: var(--primary-orange);
+    color: var(--primary-orange);
+}
+
+.modern-table .btn-outline-primary:hover {
+    background-color: var(--primary-orange);
+    color: #fff;
+}
+
+/* Align action column right */
+.modern-table td:last-child {
+    text-align: right;
+}
+
+/* ============================
+   Responsive Adjustments
+   ============================ */
+@media (max-width: 768px) {
+    .container.py-4 {
+        padding: 1rem;
+    }
+
+    .modern-table thead {
+        display: none;
+    }
+
+    .modern-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .modern-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border: none;
+    }
+
+    .modern-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary-purple);
+    }
+}

@@ -1,0 +1,84 @@
+@model IEnumerable<BlogicCMR.Models.Client>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Klienti";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="page-title">Klienti</h2>
+        <a class="btn btn-primary" asp-action="Create">Nový klient</a>
+    </div>
+
+    <div class="modern-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Jméno</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Rodné číslo</th>
+                    <th>Věk</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (Model.Any())
+                    {
+                        foreach (var c in Model)
+                        {
+                            <tr>
+                                <td data-label="ID">@c.ClientId</td>
+                                <td data-label="Jméno">@c.FirstName @c.LastName</td>
+                                <td data-label="Email">@c.Email</td>
+                                <td data-label="Telefon">@c.Phone</td>
+                                <td data-label="Rodné číslo">@c.PersonalIdNumber</td>
+                                <td data-label="Věk">@c.Age</td>
+                                <td>
+                                    <div class="btn-row">
+                                        <!-- Detail -->
+                                        <a asp-action="Details"
+                                           asp-route-id="@c.ClientId"
+                                           class="btn btn-details btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        
+                                        <!-- Edit -->
+                                        <a asp-action="Edit"
+                                           asp-route-id="@c.ClientId"
+                                           class="btn btn-edit btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        
+                                        <!-- Delete -->
+                                        <form asp-action="Delete" asp-route-id="@c.ClientId" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="btn btn-delete btn-sm"
+                                                    onclick="return confirm('Opravdu chcete tohoto klienta smazat?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                Žádní klienti nebyli nalezeni.
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

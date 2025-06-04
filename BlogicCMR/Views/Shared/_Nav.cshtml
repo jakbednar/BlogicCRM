@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="~/css/nav.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/mainlayout.css" asp-append-version="true" />
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-blogic shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fs-3 fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+            <span class="text-white">Blogic</span><span class="text-brand-orange">CMR</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Přepnout navigaci">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-center" id="navbarMain">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Contracts" asp-action="Index">Smlouvy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Clients" asp-action="Index">Klienti</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Advisors" asp-action="Index">Poradci</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,29 @@
+﻿:root {
+  --primary-orange: #ff5924;
+  --primary-purple: #513189;
+}
+
+/* Footer */
+.footer-blogic {
+  background-color: var(--primary-purple);
+  color: #fafafa;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+.footer-blogic a {
+  color: #fafafa;
+  text-decoration: none;
+}
+.footer-blogic a:hover {
+  text-decoration: underline;
+}
+
+/* Responzivní úpravy pro obsah */
+@media (max-width: 576px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

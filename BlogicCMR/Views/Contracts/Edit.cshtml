@@ -1,0 +1,301 @@
+@model BlogicCMR.Models.Contract
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Upravit smlouvu";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <h2 class="page-title">Upravit smlouvu</h2>
+
+    <form asp-action="Edit" asp-route-id="@Model.ContractId" method="post" id="formEdit">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ContractId" />
+
+        <!-- Instituce -->
+        <div class="form-group mb-3">
+            <label asp-for="Institution" class="form-label"></label>
+            <input asp-for="Institution" class="form-control" />
+            <span asp-validation-for="Institution" class="text-danger"></span>
+        </div>
+
+        <!-- Klient -->
+        <div class="mb-3">
+            <label class="form-label">Klient</label>
+            <div class="input-group mb-1">
+                <input type="text"
+                       id="clientDisplay"
+                       class="form-control"
+                       readonly
+                       value="@(Model.Client?.FirstName + " " + Model.Client?.LastName ?? "")" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#clientList">
+                    Změnit klienta
+                </button>
+            </div>
+            <div class="collapse" id="clientList">
+                <div class="card card-body">
+                    @foreach(var c in (SelectList)ViewBag.Clients)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="ClientId"
+                                   value="@c.Value"
+                                   id="client_@c.Value"
+                                   @(c.Value == Model.ClientId.ToString() ? "checked" : "") />
+                            <label class="form-check-label"
+                                   for="client_@c.Value">
+                                @c.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ClientId" class="text-danger"></span>
+        </div>
+
+        <!-- Správce smlouvy -->
+        <div class="mb-3">
+            <label class="form-label">Správce smlouvy</label>
+            <div class="input-group mb-1">
+                <input type="text"
+                       id="managerDisplay"
+                       class="form-control"
+                       readonly
+                       value="@(Model.Manager?.FirstName + " " + Model.Manager?.LastName ?? "")" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#managerList">
+                    Změnit správce
+                </button>
+            </div>
+            <div class="collapse" id="managerList">
+                <div class="card card-body">
+                    @foreach(var a in (SelectList)ViewBag.Advisors)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="ManagerId"
+                                   value="@a.Value"
+                                   id="mgr_@a.Value"
+                                   @(a.Value == Model.ManagerId.ToString() ? "checked" : "") />
+                            <label class="form-check-label"
+                                   for="mgr_@a.Value">
+                                @a.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ManagerId" class="text-danger"></span>
+        </div>
+
+        <!-- Účastníci smlouvy -->
+        <div class="mb-3">
+            <label class="form-label">Účastníci smlouvy</label>
+            <div class="input-group mb-1">
+                <div id="participantsBadges" class="flex-grow-1">
+                    @* 1) Zde vykreslíme již stávající účastníky včetně manažera *@
+                    @{
+                        // 1a) Vykreslíme manažera jako badge s neupravovatelnou ikonou
+                        if (Model.ManagerId != null)
+                        {
+                            var m = Model.Participants.First(p => p.AdvisorId == Model.ManagerId);
+                            <span class="badge bg-primary me-1" id="badge_@m.AdvisorId">
+                                @m.FirstName @m.LastName 
+                                <i class="bi bi-x-circle ms-1" style="cursor:not-allowed;"></i>
+                            </span>
+                            <input type="hidden"
+                                   name="ParticipantIds"
+                                   value="@m.AdvisorId"
+                                   id="hid_@m.AdvisorId" />
+                        }
+                        // 1b) Vykreslíme ostatní, kteří nejsou manažerem
+                        foreach (var p in Model.Participants.Where(p => p.AdvisorId != Model.ManagerId))
+                        {
+                            <span class="badge bg-primary me-1" id="badge_@p.AdvisorId">
+                                @p.FirstName @p.LastName 
+                                <i class="bi bi-x-circle ms-1" style="cursor:pointer"></i>
+                            </span>
+                            <input type="hidden"
+                                   name="ParticipantIds"
+                                   value="@p.AdvisorId"
+                                   id="hid_@p.AdvisorId" />
+                        }
+                    }
+                </div>
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#participantsList">
+                    Přidat/odebrat účastníky
+                </button>
+            </div>
+            <div class="collapse" id="participantsList">
+                <div class="card card-body" style="max-height:200px; overflow:auto;">
+                    @foreach(var a in (MultiSelectList)ViewBag.ParticipantIds)
+                    {
+                        var isManager = Model.ManagerId.HasValue && a.Value == Model.ManagerId.ToString();
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="part_@a.Value"
+                                   value="@a.Value"
+                                   name="__ignore[]"
+                                   @(isManager ? "checked disabled" 
+                                               : (Model.Participants.Any(p => p.AdvisorId.ToString() == a.Value) 
+                                                   ? "checked" 
+                                                   : "")) />
+                            <label class="form-check-label"
+                                   for="part_@a.Value">
+                                @a.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ParticipantIds" class="text-danger"></span>
+        </div>
+
+        <!-- Datumová pole vedle sebe -->
+        <div class="row">
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateSigned" class="form-label"></label>
+                <input asp-for="DateSigned" type="date" class="form-control" />
+                <span asp-validation-for="DateSigned" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateValidFrom" class="form-label"></label>
+                <input asp-for="DateValidFrom" type="date" class="form-control" />
+                <span asp-validation-for="DateValidFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateEnd" class="form-label"></label>
+                <input asp-for="DateEnd" type="date" class="form-control" />
+                <span asp-validation-for="DateEnd" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="detail-actions">
+            <a asp-action="Details" asp-route-id="@Model.ContractId" class="btn btn-outline-secondary">Zrušit</a>
+            <button type="submit" class="btn btn-primary">Uložit změny</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const badges = document.getElementById('participantsBadges');
+        const form   = document.getElementById('formEdit');
+
+        // --- 1) Když uživatel změní manažera, aktualizovat badgey a checkboxy ---
+        document.querySelectorAll('input[name="ManagerId"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const name = radio.nextElementSibling.textContent.trim();
+                const id   = radio.value;
+                document.getElementById('managerDisplay').value = name;
+                bootstrap.Collapse.getInstance(
+                  document.getElementById('managerList')
+                ).hide();
+
+                // Odebrat starého správce
+                document.querySelectorAll('#participantsBadges span').forEach(function(spanEl) {
+                    if (spanEl.querySelector('i').style.cursor === 'not-allowed') {
+                        const oldId = spanEl.id.replace('badge_', '');
+                        spanEl.remove();
+                        const oldHidden = document.getElementById('hid_' + oldId);
+                        if (oldHidden) oldHidden.remove();
+                    }
+                });
+                // Odblokovat starý přepnutý checkbox (pokud existuje)
+                document.querySelectorAll('#participantsList input[type="checkbox"]').forEach(cb => {
+                    if (cb.disabled && cb.value !== id) {
+                        cb.disabled = false;
+                        cb.checked = false;
+                    }
+                });
+
+                // Přidat nového správce
+                if (!document.getElementById('badge_' + id)) {
+                    const span = document.createElement('span');
+                    span.className = 'badge bg-primary me-1';
+                    span.id        = 'badge_' + id;
+                    span.innerHTML = name + 
+                      ' <i class="bi bi-x-circle ms-1" style="cursor:not-allowed;"></i>';
+                    badges.insertBefore(span, badges.firstChild);
+
+                    const hid = document.createElement('input');
+                    hid.type  = 'hidden';
+                    hid.name  = 'ParticipantIds';
+                    hid.value = id;
+                    hid.id    = 'hid_' + id;
+                    form.appendChild(hid);
+                }
+
+                // Zakázat checkbox u manažera
+                const mgrCheckbox = document.querySelector('#participantsList input[value="' + id + '"]');
+                if (mgrCheckbox) {
+                    mgrCheckbox.checked  = true;
+                    mgrCheckbox.disabled = true;
+                }
+            });
+        });
+
+        // --- 2) Ruční výběr účastníků (checkbox): přidávat/odebírat badgey + hidden inputy ---
+        document.querySelectorAll('#participantsList input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const id   = cb.value;
+                const name = cb.nextElementSibling.textContent.trim();
+
+                if (cb.checked) {
+                    if (!document.getElementById('badge_' + id)) {
+                        const span = document.createElement('span');
+                        span.className = 'badge bg-primary me-1';
+                        span.id        = 'badge_' + id;
+                        span.innerHTML = name +
+                          ' <i class="bi bi-x-circle ms-1" style="cursor:pointer"></i>';
+                        badges.appendChild(span);
+
+                        const hid = document.createElement('input');
+                        hid.type  = 'hidden';
+                        hid.name  = 'ParticipantIds';
+                        hid.value = id;
+                        hid.id    = 'hid_' + id;
+                        form.appendChild(hid);
+
+                        span.querySelector('i').addEventListener('click', () => {
+                            cb.checked = false;
+                            span.remove();
+                            const hiddenEl = document.getElementById('hid_' + id);
+                            if (hiddenEl) hiddenEl.remove();
+                        });
+                    }
+                } else {
+                    document.getElementById('badge_' + id)?.remove();
+                    document.getElementById('hid_' + id)?.remove();
+                }
+            });
+        });
+
+        // --- 3) Klient: zobrazení do input boxu, zavření collapse ---
+        document.querySelectorAll('input[name="ClientId"]').forEach(r => {
+            r.addEventListener('change', () => {
+                document.getElementById('clientDisplay').value =
+                  r.nextElementSibling.textContent.trim();
+                bootstrap.Collapse.getInstance(
+                  document.getElementById('clientList')
+                ).hide();
+            });
+        });
+    });
+    </script>
+}

@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – BlogicCMR</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/nav.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/mainlayout.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <header>
+        @{
+            var currentAction     = ViewContext.RouteData.Values["action"]?.ToString();
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+            // Zobrazíme navbar pouze pokud NEJSME na Home/Index
+            if (!(string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+                  && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase)))
+            {
+                @await Html.PartialAsync("_Nav")
+            }
+        }
+    </header>
+
+    <main class="flex-grow-1 py-0">
+        @if (IsSectionDefined("FullWidth"))
+        {
+            @RenderSection("FullWidth")
+        }
+        else
+        {
+            <div class="container py-4">
+                @RenderBody()
+            </div>
+        }
+    </main>
+
+    @* Footer schováme, pokud jsme na Home/Index, jinak ho zobrazíme *@
+    @{
+        var currAction2     = ViewContext.RouteData.Values["action"]?.ToString();
+        var currController2 = ViewContext.RouteData.Values["controller"]?.ToString();
+        if (!(string.Equals(currController2, "Home", StringComparison.OrdinalIgnoreCase)
+              && string.Equals(currAction2, "Index", StringComparison.OrdinalIgnoreCase)))
+        {
+            <footer class="mt-auto py-3 footer-blogic text-center">
+                <div class="container">
+                    <small>
+                        &copy; @DateTime.Now.Year BlogicCRM s.r.o. &bull;
+                        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="text-light text-decoration-none">
+                            blogiccrm.cz
+                        </a>
+                    </small>
+                </div>
+            </footer>
+        }
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

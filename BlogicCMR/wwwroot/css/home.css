@@ -1,0 +1,68 @@
+:root {
+    --home-gradient-start: var(--gradient-start);
+    --home-gradient-end:   var(--gradient-end);
+    --primary-orange: #ff5924;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg,
+    var(--home-gradient-start) 0%,
+    var(--home-gradient-end)   100%);
+}
+
+.home-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    height: 100vh;
+    color: #fff;
+}
+
+.home-hero .hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Styl pro hlavní titulek „BlogicCRM“ */
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+.hero-title span {
+    display: inline-block;
+}
+.hero-title .text-brand-orange {
+    color: var(--primary-orange);
+}
+
+/* Odstavec pod titulkem */
+.home-hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* Tlačítko */
+.btn-get-started {
+    display: inline-block;
+    background-color: var(--primary-orange);
+    color: #fff;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+}
+.btn-get-started:hover {
+    background-color: #e6501e;
+}

@@ -1,0 +1,261 @@
+@model BlogicCMR.Models.Contract
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Přidat smlouvu";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <h2 class="page-title">Přidat smlouvu</h2>
+
+    <form asp-action="Create" method="post" id="formCreate">
+        @Html.AntiForgeryToken()
+
+        <!-- Instituce -->
+        <div class="form-group mb-3">
+            <label asp-for="Institution" class="form-label"></label>
+            <input asp-for="Institution" class="form-control" />
+            <span asp-validation-for="Institution" class="text-danger"></span>
+        </div>
+
+        <!-- Klient -->
+        <div class="mb-3">
+            <label class="form-label">Klient</label>
+            <div class="input-group mb-1">
+                <input type="text" id="clientDisplay" class="form-control" readonly placeholder="Žádný klient vybrán" />
+                <button class="btn btn-outline-secondary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#clientList">
+                    Vybrat klienta
+                </button>
+            </div>
+            <div class="collapse" id="clientList">
+                <div class="card card-body">
+                    @foreach(var c in (SelectList)ViewBag.Clients)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ClientId"
+                                   value="@c.Value" id="client_@c.Value" />
+                            <label class="form-check-label" for="client_@c.Value">
+                                @c.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ClientId" class="text-danger"></span>
+        </div>
+
+        <!-- Správce smlouvy -->
+        <div class="mb-3">
+            <label class="form-label">Správce smlouvy</label>
+            <div class="input-group mb-1">
+                <input type="text" id="managerDisplay" class="form-control" readonly placeholder="Žádný správce vybrán" />
+                <button class="btn btn-outline-secondary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#managerList">
+                    Vybrat správce
+                </button>
+            </div>
+            <div class="collapse" id="managerList">
+                <div class="card card-body">
+                    @foreach(var a in (SelectList)ViewBag.Advisors)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ManagerId"
+                                   value="@a.Value" id="mgr_@a.Value" />
+                            <label class="form-check-label" for="mgr_@a.Value">
+                                @a.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ManagerId" class="text-danger"></span>
+        </div>
+
+        <!-- Účastníci smlouvy -->
+        <div class="mb-3">
+            <label class="form-label">Účastníci smlouvy</label>
+
+            <!-- 1) Badge kontejner (sem se přidají již vybraní účastníci včetně Správce) -->
+            <div class="input-group mb-1">
+                <div id="participantsBadges" class="flex-grow-1">
+                    @* 1a) Pokud už byl Správce přednastaven (Create scénář obvykle ještě nemá Model.ManagerId), 
+                           ručně se do badge přidá později JS kódem, případně při Editu by se sem vykreslil. *@
+                </div>
+
+                <!-- 1b) Tlačítko pro zobrazení/skrytí seznamu účastníků -->
+                <button class="btn btn-outline-secondary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#participantsList">
+                    Přidat účastníka
+                </button>
+            </div>
+
+            <!-- 2) Rozbalovací seznam pro výběr účastníků -->
+            <div class="collapse" id="participantsList">
+                <div class="card card-body" style="max-height:200px; overflow:auto;">
+                    @foreach(var a in (MultiSelectList)ViewBag.ParticipantIds)
+                    {
+                        <div class="form-check">
+                            @* 
+                                pro Create: Správce ještě není v Model, ale JS se postará, aby se badge+input
+                                přidalo, jakmile uživatel v sekci Správce vybere manažera.
+                            *@
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="part_@a.Value"
+                                   value="@a.Value"
+                                   name="__ignore[]" />
+                            <label class="form-check-label" for="part_@a.Value">
+                                @a.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <span asp-validation-for="ParticipantIds" class="text-danger"></span>
+        </div>
+
+        <!-- Datumová pole vedle sebe -->
+        <div class="row">
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateSigned" class="form-label"></label>
+                <input asp-for="DateSigned" type="date" class="form-control" />
+                <span asp-validation-for="DateSigned" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateValidFrom" class="form-label"></label>
+                <input asp-for="DateValidFrom" type="date" class="form-control" />
+                <span asp-validation-for="DateValidFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4 mb-3">
+                <label asp-for="DateEnd" class="form-label"></label>
+                <input asp-for="DateEnd" type="date" class="form-control" />
+                <span asp-validation-for="DateEnd" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="detail-actions">
+            <a asp-action="Index" class="btn btn-outline-secondary">Zrušit</a>
+            <button type="submit" class="btn btn-primary">Uložit</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const form   = document.getElementById('formCreate');
+        const badges = document.getElementById('participantsBadges');
+
+        // --- 1) Správce smlouvy: jakmile se vybere nově v radiu, přidej ho do badge seznamu a zakážete checkbox ---
+        document.querySelectorAll('input[name="ManagerId"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const name = radio.nextElementSibling.textContent.trim();
+                const id   = radio.value;
+                document.getElementById('managerDisplay').value = name;
+                bootstrap.Collapse.getInstance(
+                  document.getElementById('managerList')
+                ).hide();
+
+                // 1a) Odeber případný starý manažerův badge + hidden input
+                document.querySelectorAll('#participantsBadges span').forEach(function(spanEl) {
+                    // Všechny badge, které mají disabled-ikonu (= předchozí manager)
+                    if (spanEl.querySelector('i').style.cursor === 'not-allowed') {
+                        const oldId = spanEl.id.replace('badge_', '');
+                        spanEl.remove();
+                        const oldHidden = document.getElementById('hid_' + oldId);
+                        if (oldHidden) oldHidden.remove();
+                    }
+                });
+
+                // 1b) V seznamu checkboxů odblokuj starého managera (pokud byl checkbox disabled)
+                document.querySelectorAll('#participantsList input[type="checkbox"]').forEach(cb => {
+                    if (cb.disabled && cb.value !== id) {
+                        cb.disabled = false;
+                        cb.checked = false;
+                    }
+                });
+
+                // 1c) Přidej nového manažera do badge (s neupravovatelnou ikonou)
+                if (!document.getElementById('badge_' + id)) {
+                    // Vytvoříme badge
+                    const span = document.createElement('span');
+                    span.className = 'badge bg-primary me-1';
+                    span.id        = 'badge_' + id;
+                    span.innerHTML = name + 
+                      ' <i class="bi bi-x-circle ms-1" style="cursor:not-allowed;"></i>';
+                    badges.insertBefore(span, badges.firstChild);
+
+                    // Skrytý input (správce musí být vždy odeslán)
+                    const hid = document.createElement('input');
+                    hid.type  = 'hidden';
+                    hid.name  = 'ParticipantIds';
+                    hid.value = id;
+                    hid.id    = 'hid_' + id;
+                    form.appendChild(hid);
+                }
+
+                // 1d) Checkbox správce označíme jako checked a disabled
+                const managerCheckbox = document.querySelector('#participantsList input[value="' + id + '"]');
+                if (managerCheckbox) {
+                    managerCheckbox.checked  = true;
+                    managerCheckbox.disabled = true;
+                }
+            });
+        });
+
+        // --- 2) Ruční výběr účastníků: při zaškrtnutí přidej badge + hidden input, při odškrtnutí odstraň ---
+        document.querySelectorAll('#participantsList input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const id   = cb.value;
+                const name = cb.nextElementSibling.textContent.trim();
+
+                if (cb.checked) {
+                    // Přidáme badge + hidden input jen pokud neexistují
+                    if (!document.getElementById('badge_' + id)) {
+                        const span = document.createElement('span');
+                        span.className = 'badge bg-primary me-1';
+                        span.id        = 'badge_' + id;
+                        span.innerHTML = name +
+                          ' <i class="bi bi-x-circle ms-1" style="cursor:pointer"></i>';
+                        badges.appendChild(span);
+
+                        const hid = document.createElement('input');
+                        hid.type  = 'hidden';
+                        hid.name  = 'ParticipantIds';
+                        hid.value = id;
+                        hid.id    = 'hid_' + id;
+                        form.appendChild(hid);
+
+                        // Klik na křížek: odznačit checkbox, odebrat badge a hidden input
+                        span.querySelector('i').addEventListener('click', () => {
+                            cb.checked = false;
+                            span.remove();
+                            const hiddenEl = document.getElementById('hid_' + id);
+                            if (hiddenEl) hiddenEl.remove();
+                        });
+                    }
+                } else {
+                    // Odebrání badge + hidden input
+                    document.getElementById('badge_' + id)?.remove();
+                    document.getElementById('hid_' + id)?.remove();
+                }
+            });
+        });
+
+        // --- 3) Klient: zobrazení jména do input boxu, zavření collapse ---
+        document.querySelectorAll('input[name="ClientId"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('clientDisplay').value =
+                  radio.nextElementSibling.textContent.trim();
+                bootstrap.Collapse.getInstance(
+                  document.getElementById('clientList')
+                ).hide();
+            });
+        });
+    });
+    </script>
+}

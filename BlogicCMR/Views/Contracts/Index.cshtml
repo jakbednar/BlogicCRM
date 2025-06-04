@@ -1,0 +1,84 @@
+@model IEnumerable<BlogicCMR.Models.Contract>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Smlouvy";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="page-title">Smlouvy</h2>
+        <a class="btn btn-primary" asp-action="Create">Nová smlouva</a>
+    </div>
+
+    <div class="modern-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Klient</th>
+                    <th>Poradce</th>
+                    <th>Datum uzavření</th>
+                    <th>Platné do</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var c in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">@c.ContractId</td>
+                            <td data-label="Klient">@c.Client.FirstName @c.Client.LastName</td>
+                            <td data-label="Poradce">@c.Manager.FirstName @c.Manager.LastName</td>
+                            <td data-label="Datum uzavření">@c.DateSigned.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td data-label="Platné do">
+                                @(c.DateEnd.HasValue 
+                                    ? c.DateEnd.Value.ToString("dd.MM.yyyy HH:mm") 
+                                    : "—")
+                            </td>
+                            <td data-label="Akce">
+                                <div class="btn-row">
+                                    <!-- Detail -->
+                                    <a asp-action="Details"
+                                       asp-route-id="@c.ContractId"
+                                       class="btn btn-details btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    
+                                    <!-- Edit -->
+                                    <a asp-action="Edit"
+                                       asp-route-id="@c.ContractId"
+                                       class="btn btn-edit btn-sm">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    
+                                    <!-- Delete -->
+                                    <form asp-action="Delete" asp-route-id="@c.ContractId" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn btn-delete btn-sm"
+                                                onclick="return confirm('Opravdu chcete tuto smlouvu smazat?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            Žádné smlouvy nebyly nalezeny.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

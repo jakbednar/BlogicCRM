@@ -1,0 +1,92 @@
+:root {
+    --primary-orange: #ff5924;
+    --primary-purple: #513189;
+    --gradient-start: #513189;
+    --gradient-end: #ff5924;
+}
+
+/* Výchozí bílé odkazy v navbaru */
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff !important;
+}
+
+/* Hover/focus/active zůstane oranžová */
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--primary-orange) !important;
+}
+
+
+/* Navbar gradient */
+.bg-gradient-blogic {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+}
+
+/* Brand “CMR” v oranžové */
+.text-brand-orange {
+    color: var(--primary-orange) !important;
+}
+
+/* Link hover efekt v navigaci */
+.nav-link {
+    transition: color 0.2s;
+}
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--primary-orange) !important;
+}
+
+/* Vycentrované hlavní menu */
+.navbar-nav.mx-auto {
+    display: flex;
+    gap: 2rem;
+}
+
+/* Zvýrazněné položky menu */
+.navbar-nav .nav-link {
+    font-size: 1.125rem;
+    font-weight: 600;
+    padding: 0.5rem 0;
+    position: relative;
+}
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -0.25rem;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-orange);
+    transition: width 0.2s;
+}
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link:focus::after,
+.navbar-nav .nav-link.active::after {
+    width: 100%;
+}
+
+/* Předefinice Bootstrap tlačítka (volitelné v navigaci) */
+.btn-light.text-brand-purple {
+    background-color: #fff;
+    border: 2px solid var(--primary-purple);
+    color: var(--primary-purple);
+    transition: background-color 0.2s, color 0.2s;
+}
+.btn-light.text-brand-purple:hover,
+.btn-light.text-brand-purple:focus {
+    background-color: var(--primary-purple);
+    color: #fff;
+}
+
+/* Lehký stín utility (použitelné i pro navbar) */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Responzivní úpravy pro navbar */
+@media (max-width: 576px) {
+    .navbar-nav.mx-auto {
+        gap: 1rem;
+    }
+}

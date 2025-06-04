@@ -1,0 +1,62 @@
+@model BlogicCMR.Models.Client
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Upravit klienta";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="container py-4">
+    <h2 class="page-title">Upravit klienta</h2>
+
+    <form asp-action="Edit" asp-route-id="@Model.ClientId" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ClientId" />
+
+        <div class="form-group">
+            <label asp-for="FirstName" class="form-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName" class="form-label"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone" class="form-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PersonalIdNumber" class="form-label"></label>
+            <input asp-for="PersonalIdNumber" class="form-control" />
+            <span asp-validation-for="PersonalIdNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Age" class="form-label"></label>
+            <input asp-for="Age" type="number" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <div class="detail-actions">
+            <a asp-action="Details" asp-route-id="@Model.ClientId" class="btn btn-outline-secondary">Zrušit</a>
+            <button type="submit" class="btn btn-primary">Uložit změny</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

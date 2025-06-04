@@ -1,0 +1,83 @@
+@model BlogicCMR.Models.Contract
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Detail smlouvy";
+}
+
+<link rel="stylesheet" href="~/css/pages.css" asp-append-version="true" />
+
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="card-header">
+            <h3>Detail smlouvy</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Registrační číslo</dt>
+                <dd class="col-sm-9">@Model.ContractId</dd>
+
+                <dt class="col-sm-3">Instituce</dt>
+                <dd class="col-sm-9">@Model.Institution</dd>
+
+                <dt class="col-sm-3">Klient</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Client is not null)
+                    {
+                        <a asp-controller="Clients"
+                           asp-action="Details"
+                           asp-route-id="@Model.ClientId"
+                           class="text-decoration-none link-warning">
+                            @Model.Client.FirstName @Model.Client.LastName
+                        </a>
+                    }
+                    else { <em>Neznámý</em> }
+                </dd>
+
+                <dt class="col-sm-3">Správce</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Manager is not null)
+                    {
+                        <a asp-controller="Advisors"
+                           asp-action="Details"
+                           asp-route-id="@Model.ManagerId"
+                           class="text-decoration-none link-warning">
+                            @Model.Manager.FirstName @Model.Manager.LastName
+                        </a>
+                    }
+                    else { <em>Neurčeno</em> }
+                </dd>
+
+                <dt class="col-sm-3">Datum podpisu</dt>
+                <dd class="col-sm-9">@Model.DateSigned.ToString("d. M. yyyy")</dd>
+
+                <dt class="col-sm-3">Platné od</dt>
+                <dd class="col-sm-9">@Model.DateValidFrom.ToString("d. M. yyyy")</dd>
+
+                <dt class="col-sm-3">Platné do</dt>
+                <dd class="col-sm-9">
+                    @(Model.DateEnd.HasValue 
+                        ? Model.DateEnd.Value.ToString("d. M. yyyy") 
+                        : "Neomezeno")
+                </dd>
+
+                <dt class="col-sm-3">Účastníci</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Participants != null && Model.Participants.Any())
+                    {
+                        @string.Join(", ", Model.Participants.Select(p => p.FirstName + " " + p.LastName))
+                    }
+                    else
+                    {
+                        <em>Žádní</em>
+                    }
+                </dd>
+            </dl>
+
+            <div class="detail-actions">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary">Zpět</a>
+                <a asp-action="Edit" asp-route-id="@Model.ContractId" class="btn btn-primary">Upravit</a>
+            </div>
+        </div>
+    </div>
+</div>

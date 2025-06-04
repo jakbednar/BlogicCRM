@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Domovská stránka";
+}
+
+@section FullWidth {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    
+    <div class="home-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span>Blogic</span><span class="text-brand-orange">CRM</span>
+            </h1>
+            <p>Spravujte smlouvy, zákazníky a poradce efektivně na jednom místě.</p>
+            <a asp-controller="Contracts" asp-action="Index" class="btn-get-started">Začít</a>
+        </div>
+    </div>
+}
